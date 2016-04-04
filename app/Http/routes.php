@@ -12,11 +12,6 @@ Route::get('contact', function() {
 	return view('pages.contact');
 });
 
-Route::get('friends', function() {
-	$followers = ['Andi', 'Bobi', 'Candra', 'Dedi'];
-	$following = ['Amelia', 'Barbara', 'Cindy', 'Debora'];
+Route::get('friends', 'FriendController@all');
 
-	return view('pages.friend',
-		compact('followers', 'following')
-	);
-});
+Route::get('products', 'ProductController@index');
