@@ -1,6 +1,6 @@
 <html>
 <head>
-<title> Title </title>
+<title> Territories </title>
 </head>
 <body>
 @extends('master')

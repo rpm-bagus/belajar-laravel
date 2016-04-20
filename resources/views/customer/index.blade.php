@@ -4,9 +4,9 @@
 
 @extends('master')
 @section ('konten_utama')
-	<center><h1>Daftar Semua Pesanan</h1>
+	<center><h1>Daftar Semua Pelanggan</h1>
 	</center>
-	
+
 	<table class="table table-condensed table hover">
 	<thread>
 		<th>No</th>
@@ -33,5 +33,5 @@
 	@endforeach
 	</tbody>
 	</table>
-	
+
 @stop

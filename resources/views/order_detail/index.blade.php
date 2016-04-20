@@ -1,6 +1,6 @@
 <html>
 <head>
-<title> Title </title>
+<title> Order Detail </title>
 </head>
 <body>
 @extends('master')

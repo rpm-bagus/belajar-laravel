@@ -38,7 +38,9 @@
     <body>
         <div class="container">
             <div class="content">
-                <div class="title">Laravel 5</div>
+              <div class="title">R.P. Mohammad Bagus Santoso</div>
+              <div class="title">14410100136</div>
+              <a href="category" style="text-decoration: none; font-size: 40px;">[MASUK]</a>
             </div>
         </div>
     </body>

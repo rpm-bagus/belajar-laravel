@@ -1,8 +1,12 @@
+<head>
+<title> Kategori </title>
+</head>
+
 @extends('master')
 @section ('konten_utama')
 	<center><h1>Daftar Semua Kategori</h1>
 	</center>
-	
+
 	<table class="table table-condensed table hover">
 	<thread>
 		<th>Nama</th>
@@ -22,5 +26,5 @@
 	@endforeach
 	</tbody>
 	</table>
-	
+
 @stop
