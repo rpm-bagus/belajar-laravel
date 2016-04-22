@@ -13,6 +13,7 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('css/sticky-footer-navbar.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('css/sweetalert2.min.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap-theme.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/datepicker.css') }}">
 
         <style type="text/css">
             h1 { margin-bottom: 40px; }
@@ -36,17 +37,17 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/">14410100136</a>
+                    <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span></a>
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="/category">Kategori</a></li>
-                        <li><a href="/product">Produk</a></li>
-                        <li><a href="/employee">Karyawan</a></li>
-                        <li><a href="/supplier">Pemasok</a></li>
-                        <li><a href="/customer">Pelanggan</a></li>
-                        <li><a href="/shipper">Kurir</a></li>
-                        <li><a href="/order">Pemesanan</a></li>
+                        <li><a href="/category"><span class="glyphicon glyphicon-th-list"></span> Kategori</a></li>
+                        <li><a href="/product"><span class="glyphicon glyphicon-th-list"></span> Produk</a></li>
+                        <li><a href="/employee"><span class="glyphicon glyphicon-th-list"></span> Karyawan</a></li>
+                        <li><a href="/supplier"><span class="glyphicon glyphicon-th-list"></span> Pemasok</a></li>
+                        <li><a href="/customer"><span class="glyphicon glyphicon-th-list"></span> Pelanggan</a></li>
+                        <li><a href="/shipper"><span class="glyphicon glyphicon-th-list"></span> Kurir</a></li>
+                        <li><a href="/order"><span class="glyphicon glyphicon-th-list"></span> Pemesanan</a></li>
                     </ul>
                 </div>
             </div>
@@ -77,5 +78,12 @@
         <script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/sweetalert2.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/common.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/bootstrap-datepicker.id.js') }}"></script>
+        <script type='text/javascript'>//<![CDATA[
+        $(window).load(function(){
+            $(".date-picker").datepicker();
+        });//]]>
+    </script>
     </body>
 </html>

@@ -25,13 +25,29 @@
 <div class="form-group">
     <label class="col-md-2 control-label" for="BirthDate">Birth Date</label>
     <div class="col-md-2">
+        <div class='input-group date' id='dtPicker1'>
+            <input type='text' class="date-picker form-control"  data-date-format="yyyy-mm-dd" id="BirthDate" name="BirthDate" value="{{ isset($employee->BirthDate) ? $employee->BirthDate : '' }}">
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+        </div>
+    <!--
       <input type="text" class="form-control" placeholder="yyyy-mm-dd 00:00:00" id="BirthDate" name="BirthDate" value="{{ isset($employee->BirthDate) ? $employee->BirthDate : '' }}">
+    -->
     </div>
 </div>
 <div class="form-group">
     <label class="col-md-2 control-label" for="HireDate">Hire Date</label>
     <div class="col-md-2">
+        <div class='input-group date' id='dtPicker2'>
+            <input type='text' class="date-picker form-control" data-date-format="yyyy-mm-dd" id="HireDate" name="HireDate" value="{{ isset($employee->HireDate) ? $employee->HireDate : '' }}">
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+        </div>
+    <!--
       <input type="text" class="form-control" placeholder="yyyy-mm-dd 00:00:00" id="HireDate" name="HireDate" value="{{ isset($employee->HireDate) ? $employee->HireDate : '' }}">
+    -->
     </div>
 </div>
 <div class="form-group">

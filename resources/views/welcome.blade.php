@@ -3,7 +3,12 @@
     <head>
         <title>Laravel</title>
 
-        <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap-theme.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/sticky-footer-navbar.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/sweetalert2.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap-theme.css') }}">
 
         <style>
             html, body {
@@ -16,7 +21,6 @@
                 width: 100%;
                 display: table;
                 font-weight: 100;
-                font-family: 'Lato';
             }
 
             .container {
@@ -31,7 +35,7 @@
             }
 
             .title {
-                font-size: 96px;
+                font-size: 80px;
             }
         </style>
     </head>
@@ -40,7 +44,9 @@
             <div class="content">
               <div class="title">R.P. Mohammad Bagus Santoso</div>
               <div class="title">14410100136</div>
-              <a href="category" style="text-decoration: none; font-size: 40px;">[MASUK]</a>
+              <a href="category" class="btn btn-primary">
+                <span class="glyphicon glyphicon-th-large"></span> MASUK
+              </a>
             </div>
         </div>
     </body>
