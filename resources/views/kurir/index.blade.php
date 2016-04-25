@@ -19,7 +19,7 @@
                 <tr>
                     <td><?php echo $i++; ?></td>
                     <td>
-                        <a href="shipper/{{ $shipper->ShipperID }}/show">
+                        <a href="shipper/{{ $shipper->ShipperID }}">
                             PT. {{ $shipper->CompanyName }}
                         </a>
                     </td>

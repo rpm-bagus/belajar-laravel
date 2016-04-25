@@ -1,9 +1,14 @@
-<div class="form-group">
-    <label class="col-md-2 control-label" for="CustomerID">Customer ID</label>
-    <div class="col-md-2">
-        <input type="text" class="form-control" id="CustomerID" name="CustomerID" value="{{ isset($customer->CustomerID) ? $customer->CustomerID : '' }}">
+@if (strpos(URL::current(), 'customer/create') !== false)
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="CustomerID">Customer ID</label>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="CustomerID" name="CustomerID" value="{{ isset($customer->CustomerID) ? $customer->CustomerID : '' }}">
+        </div>
     </div>
-</div>
+@else
+
+@endif
+
 <div class="form-group">
     <label class="col-md-2 control-label" for="CompanyName">Company Name</label>
     <div class="col-md-4">
