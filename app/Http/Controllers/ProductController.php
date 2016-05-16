@@ -44,6 +44,15 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         try {
+            $this->validate($request, [
+                'ProductName'       => 'required|unique:products|alpha|max:40',
+                'QuantityPerUnit'   => 'required|numeric',
+                'UnitPrice'         => 'required|numeric',
+                'UnitsInStock'      => 'required|numeric',
+                'UnitsOnOrder'      => 'required|numeric',
+                'ReorderLevel'      => 'required|numeric'
+            ]);
+            
             $id = DB::table('products')->insertGetId([
                 'ProductName'       => $request->input('ProductName'),
                 'SupplierID'        => $request->input('SupplierID'),

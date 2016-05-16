@@ -40,9 +40,13 @@ class ShipperController extends Controller
     public function store(Request $request)
     {
         try {
+            $this->validate($request, [
+                'CompanyName'  => 'required|unique:shippers|alpha|max:40',
+                'Phone'        => 'required|numeric'
+            ]);
             $id = DB::table('shippers')->insertGetId([
-              'CompanyName'  => $request->input('CompanyName'),
-              'Phone'        => $request->input('Phone')
+                'CompanyName'  => $request->input('CompanyName'),
+                'Phone'        => $request->input('Phone')
             ]);
 
             if ($id > 0) {

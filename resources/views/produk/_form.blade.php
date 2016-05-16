@@ -1,7 +1,8 @@
-<div class="form-group">
+<div class="form-group {{$errors->has('ProductName') ? 'has-error has-feedback' : '' }}">
     <label class="col-md-2 control-label" for="ProductName">Name</label>
     <div class="col-md-4">
-        <input type="text" class="form-control" id="ProductName" name="ProductName" value="{{ isset($product->ProductName) ? $product->ProductName : '' }}">
+        <input type="text" class="form-control" id="ProductName" name="ProductName" value="{{ old('ProductName') ? old('ProductName') : (isset($product->ProductName) ? $product->ProductName : '') }}">
+        <?php echo $errors->first('ProductName', '<span class="glyphicon glyphion-remove form-control-feedback"></span><span class="help-block">:message</span>');?>
     </div>
 </div>
 
@@ -27,54 +28,59 @@
     </div>
 </div>
 
-<div class="form-group">
+<div class="form-group {{$errors->has('UnitPrice') ? 'has-error has-feedback' : '' }}">
     <label class="col-md-2 control-label" for="UnitPrice">Unit Price</label>
     <div class="col-md-2">
         <div class="input-group">
             <span class="input-group-addon">$</span>
-            <input type="text" class="form-control text-right" id="UnitPrice" name="UnitPrice" value="{{ isset($product->UnitPrice) ? $product->UnitPrice : 0 }}">
+            <input type="text" class="form-control text-right" id="UnitPrice" name="UnitPrice" value="{{ old('UnitPrice') ? old('UnitPrice') : (isset($product->UnitPrice) ? $product->UnitPrice : '') }}">    
         </div>
     </div>
+    <?php echo $errors->first('UnitPrice', '<span class="glyphicon glyphion-remove form-control-feedback"></span><span class="help-block">:message</span>');?>
 </div>
 
-<div class="form-group">
+<div class="form-group {{$errors->has('QuantityPerUnit') ? 'has-error has-feedback' : '' }}">
     <label class="col-md-2 control-label" for="QuantityPerUnit">Quantity Per Unit</label>
     <div class="col-md-2">
         <div class="input-group">
-            <input type="text" class="form-control text-right" id="QuantityPerUnit" name="QuantityPerUnit" value="{{ isset($product->QuantityPerUnit) ? $product->QuantityPerUnit : 0 }}">
+            <input type="text" class="form-control text-right" id="QuantityPerUnit" name="QuantityPerUnit" value="{{ old('QuantityPerUnit') ? old('QuantityPerUnit') : (isset($product->QuantityPerUnit) ? $product->QuantityPerUnit : '') }}">
             <span class="input-group-addon">pcs</span>
         </div>
     </div>
+    <?php echo $errors->first('QuantityPerUnit', '<span class="glyphicon glyphion-remove form-control-feedback"></span><span class="help-block">:message</span>');?>
 </div>
 
-<div class="form-group">
+<div class="form-group {{$errors->has('UnitsInStock') ? 'has-error has-feedback' : '' }}">
     <label class="col-md-2 control-label" for="UnitsInStock">Units In Stock</label>
     <div class="col-md-2">
         <div class="input-group">
-            <input type="text" class="form-control text-right" id="UnitsInStock" name="UnitsInStock" value="{{ isset($product->UnitsInStock) ? $product->UnitsInStock : 0 }}">
+            <input type="text" class="form-control text-right" id="UnitsInStock" name="UnitsInStock" value="{{ old('UnitsInStock') ? old('UnitsInStock') : (isset($product->UnitsInStock) ? $product->UnitsInStock : '') }}">
             <span class="input-group-addon">pcs</span>
         </div>
     </div>
+    <?php echo $errors->first('UnitsInStock', '<span class="glyphicon glyphion-remove form-control-feedback"></span><span class="help-block">:message</span>');?>
 </div>
 
-<div class="form-group">
+<div class="form-group {{$errors->has('UnitsOnOrder') ? 'has-error has-feedback' : '' }}">
     <label class="col-md-2 control-label" for="UnitsOnOrder">Units On Order</label>
     <div class="col-md-2">
         <div class="input-group">
-            <input type="text" class="form-control text-right" id="UnitsOnOrder" name="UnitsOnOrder" value="{{ isset($product->UnitsOnOrder) ? $product->UnitsOnOrder : 0 }}">
+            <input type="text" class="form-control text-right" id="UnitsOnOrder" name="UnitsOnOrder" value="{{ old('UnitsOnOrder') ? old('UnitsOnOrder') : (isset($product->UnitsOnOrder) ? $product->UnitsOnOrder : '') }}">
             <span class="input-group-addon">pcs</span>
         </div>
     </div>
+    <?php echo $errors->first('UnitsOnOrder', '<span class="glyphicon glyphion-remove form-control-feedback"></span><span class="help-block">:message</span>');?>
 </div>
 
-<div class="form-group">
+<div class="form-group {{$errors->has('ReorderLevel') ? 'has-error has-feedback' : '' }}">
     <label class="col-md-2 control-label" for="ReorderLevel">Reorder Level</label>
     <div class="col-md-2">
         <div class="input-group">
-            <input type="text" class="form-control text-right" id="ReorderLevel" name="ReorderLevel" value="{{ isset($product->ReorderLevel) ? $product->ReorderLevel : 0 }}">
+            <input type="text" class="form-control text-right" id="ReorderLevel" name="ReorderLevel" value="{{ old('ReorderLevel') ? old('ReorderLevel') : (isset($product->ReorderLevel) ? $product->ReorderLevel : '') }}">
             <span class="input-group-addon">pcs</span>
         </div>
     </div>
+    <?php echo $errors->first('ReorderLevel', '<span class="glyphicon glyphion-remove form-control-feedback"></span><span class="help-block">:message</span>');?>
 </div>
 
 <div class="form-group">

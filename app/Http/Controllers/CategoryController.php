@@ -39,6 +39,11 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         try {
+            $this->validate($request, [
+                'CategoryName'  => 'required|unique:categories|alpha|max:50',
+                'Description'   => 'required'
+            ]);
+
             $id = DB::table('categories')->insertGetId([
                 'CategoryName'  => $request->input('CategoryName'),
                 'Description'   => $request->input('Description')

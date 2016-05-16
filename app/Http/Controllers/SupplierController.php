@@ -40,6 +40,19 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         try {
+            $this->validate($request, [
+                'CompanyName'    => 'required|unique:suppliers|alpha|max:40',
+                'ContactName'    => 'required|alpha|max:30',
+                'ContactTitle'   => 'required|alpha|max:30',
+                'Address'        => 'required|max:60',
+                'City'           => 'required|alpha|max:15',
+                'Region'         => 'required|alpha|max:15',
+                'PostalCode'     => 'required|numeric',
+                'Country'        => 'required|alpha|max:15',
+                'Phone'          => 'required|numeric',
+                'Fax'            => 'required|numeric',
+                'HomePage'       => 'required'
+            ]);
             $id = DB::table('suppliers')->insertGetId([
                 'CompanyName'    => $request->input('CompanyName'),
                 'ContactName'    => $request->input('ContactName'),
