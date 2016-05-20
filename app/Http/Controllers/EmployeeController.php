@@ -16,8 +16,9 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = DB::table('employees')->get();
-
+        $employees = DB::table('employees')
+                    ->orderBy('EmployeeID', 'asc')
+                    ->paginate(5);
         return view('karyawan.index', compact('employees'));
     }
 

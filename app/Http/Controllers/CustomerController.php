@@ -16,8 +16,9 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = DB::table('customers')->get();
-
+        $customers = DB::table('customers')
+                    ->orderBy('CustomerID', 'asc')
+                    ->paginate(10);
         return view('pelanggan.index', compact('customers'));
     }
 

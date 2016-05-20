@@ -16,7 +16,9 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $suppliers = DB::table('suppliers')->get();
+        $suppliers = DB::table('suppliers')
+                    ->orderBy('SupplierID', 'asc')
+                    ->paginate(10);
 
         return view('pemasok.index', compact('suppliers'));
     }

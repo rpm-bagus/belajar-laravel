@@ -19,7 +19,8 @@ class OrderController extends Controller
         $orders = DB::table('orders')
                     ->leftJoin('employees', 'employees.EmployeeID', '=', 'orders.EmployeeID')
                     ->leftJoin('customers', 'customers.CustomerID', '=', 'orders.CustomerID')
-                    ->get();
+                    ->orderBy('OrderID', 'asc')
+                    ->paginate(10);
 
         return view('pemesanan.index', compact('orders'));
     }

@@ -18,7 +18,8 @@ class ProductController extends Controller
     {
         $products = DB::table('products')
                     ->leftJoin('categories', 'categories.CategoryID', '=', 'products.CategoryID')
-                    ->get();
+                    ->orderBy('ProductName', 'asc')
+                    ->paginate(10);
         return view('produk.index', compact('products'));
     }
 

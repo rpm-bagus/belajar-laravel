@@ -19,7 +19,7 @@
             <?php $i = 1; ?>
             @foreach($employees as $employee)
                 <tr>
-                    <td><?php echo $i++; ?></td>
+                    <td><?php echo ($i++ + ($employees->currentPage() * $employees->perPage()) - $employees->perPage()); ?></td>
                     <td>
                         <a href="employee/{{ $employee->EmployeeID }}">
                             {{ $employee->FirstName }} {{ $employee->LastName }}, {{ $employee->TitleOfCourtesy }}
@@ -45,4 +45,5 @@
             @endforeach
         </tbody>
     </table>
+<div class="pull-right">{!! $employees->links() !!}</div>
 @endsection
