@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use DB;
+use Validator;
+
+use App\Category;
 use App\Http\Requests;
 
 class CategoryController extends Controller
@@ -16,8 +18,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = DB::table('categories')
-                    ->orderBy('CategoryID', 'asc')
+        $categories = Category::orderBy('CategoryName', 'asc')
                     ->paginate(5);
         return view('kategori.index', compact('categories'));
     }
@@ -41,19 +42,18 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         try {
-            $this->validate($request, [
+            $validator = Validator::make($request->all(), [
                 'CategoryName'  => 'required|unique:categories|alpha|max:50',
                 'Description'   => 'required'
             ]);
-
-            $id = DB::table('categories')->insertGetId([
-                'CategoryName'  => $request->input('CategoryName'),
-                'Description'   => $request->input('Description')
-            ]);
-
-            if ($id > 0) {
-                return redirect('category')->with('pesan_sukses', 'Data kategori baru berhasil disimpan.');
+            if ($validator->fails()) {
+                return
+                redirect('category/create')->withErrors($validator)->withInput();
             }
+
+            Category::create($request->all());
+
+            return redirect('category')->with('pesan_sukses', 'Data kategori baru berhasil disimpan.');
         }
         catch (Exception $e) {
             return redirect('category')->with('pesan_gagal', $e->getMessage());
@@ -92,13 +92,22 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        DB::table('categories')
-        ->where('CategoryID', $id)
-        ->update([
-                'CategoryName'  => $request->input('CategoryName'),
-                'Description'   => $request->input('Description')
+        try {
+            $validator = Validator::make($request->all(), [
+                'CategoryName'  => 'required|unique:categories,categoryname,'.$id.',categoryid|alpha|max:50',
+                'Description'   => 'required'
             ]);
-        return redirect('category')->with('pesan_sukses', 'Data kategori berhasil diubah.');
+            if ($validator->fails()) {
+                return redirect('category/'.$id.'/edit')->withErrors($validator)->withInput();
+            }
+
+            Category::where('CategoryID', $id)->update($request->except('_method'));
+
+            return redirect('category')->with('pesan_sukses', 'Data kategori berhasil diubah.');
+        }
+        catch (\Exception $e) {
+            return redirect('category')->with('pesan_gagal', $e->getMessage());
+        }
     }
 
     /**
@@ -110,11 +119,11 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         try {
-        DB::table('categories')->where('CategoryID', '=', $id)->delete();
+            Category::Where('CategoryID', $id)->delete();
 
-        return redirect('category')->with('pesan_sukses', 'Data kategori berhasil dihapus.');
+            return redirect('category')->with('pesan_sukses', 'Data kategori berhasil dihapus.');
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             return redirect('category')->with('pesan_gagal', $e->getMessage());
         }
     }
