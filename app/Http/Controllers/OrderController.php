@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
 use DB;
-use Illuminate\Http\Request;
 
+use App\Employee;
+use App\Customer;
+use App\Product;
+use App\Order;
+use App\Order_detail;
 use App\Http\Requests;
 
 class OrderController extends Controller
@@ -19,7 +24,7 @@ class OrderController extends Controller
         $orders = DB::table('orders')
                     ->leftJoin('employees', 'employees.EmployeeID', '=', 'orders.EmployeeID')
                     ->leftJoin('customers', 'customers.CustomerID', '=', 'orders.CustomerID')
-                    ->orderBy('OrderID', 'asc')
+                    ->orderBy('OrderID','asc')
                     ->paginate(10);
 
         return view('pemesanan.index', compact('orders'));

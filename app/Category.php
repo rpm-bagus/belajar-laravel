@@ -27,4 +27,8 @@ class Category extends Model
     	'CategoryName',
     	'Description'
     ];
+
+    protected function products(){
+        return $this->hasMany(Product::class, 'CategoryID');
+    }
 }

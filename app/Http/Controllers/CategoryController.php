@@ -18,8 +18,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::orderBy('CategoryName', 'asc')
-                    ->paginate(5);
+        $categories = Category::orderBy('CategoryName', 'asc')->paginate(5);
         return view('kategori.index', compact('categories'));
     }
 
@@ -47,12 +46,9 @@ class CategoryController extends Controller
                 'Description'   => 'required'
             ]);
             if ($validator->fails()) {
-                return
-                redirect('category/create')->withErrors($validator)->withInput();
+                return redirect('category/create')->withErrors($validator)->withInput();
             }
-
             Category::create($request->all());
-
             return redirect('category')->with('pesan_sukses', 'Data kategori baru berhasil disimpan.');
         }
         catch (Exception $e) {
@@ -79,7 +75,7 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $category = DB::table('categories')->where('CategoryID', $id)->first();
+        $category = Category::where('CategoryID', $id)->first();
         return view('kategori.edit', compact('category'));
     }
 
@@ -100,9 +96,7 @@ class CategoryController extends Controller
             if ($validator->fails()) {
                 return redirect('category/'.$id.'/edit')->withErrors($validator)->withInput();
             }
-
             Category::where('CategoryID', $id)->update($request->except('_method'));
-
             return redirect('category')->with('pesan_sukses', 'Data kategori berhasil diubah.');
         }
         catch (\Exception $e) {
@@ -120,7 +114,6 @@ class CategoryController extends Controller
     {
         try {
             Category::Where('CategoryID', $id)->delete();
-
             return redirect('category')->with('pesan_sukses', 'Data kategori berhasil dihapus.');
         }
         catch (\Exception $e) {

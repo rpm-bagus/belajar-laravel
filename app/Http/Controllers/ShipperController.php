@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use DB;
+use Validator;
+
+use App\Shipper;
 use App\Http\Requests;
 
 class ShipperController extends Controller
@@ -16,10 +18,7 @@ class ShipperController extends Controller
      */
     public function index()
     {
-        $shippers = DB::table('shippers')
-                    ->orderBy('ShipperID', 'asc')
-                    ->paginate(5);
-
+        $shippers = Shipper::orderBy('ShipperID', 'asc')->paginate(5);
         return view('kurir.index', compact('shippers'));
     }
 
@@ -42,18 +41,15 @@ class ShipperController extends Controller
     public function store(Request $request)
     {
         try {
-            $this->validate($request, [
+            $validator = Validator::make($request->all(), [
                 'CompanyName'  => 'required|unique:shippers|alpha|max:40',
                 'Phone'        => 'required|numeric'
             ]);
-            $id = DB::table('shippers')->insertGetId([
-                'CompanyName'  => $request->input('CompanyName'),
-                'Phone'        => $request->input('Phone')
-            ]);
-
-            if ($id > 0) {
-                return redirect('shipper')->with('pesan_sukses', 'Data kurir baru berhasil disimpan.');
+            if ($validator->fails()) {
+                return redirect('shipper/create')->withErrors($validator)->withInput();
             }
+            Shipper::create($request->all());
+            return redirect('shipper')->with('pesan_sukses', 'Data kurir baru berhasil disimpan.');
         }
         catch (Exception $e) {
             return redirect('shipper')->with('pesan_gagal', $e->getMessage());
@@ -68,7 +64,7 @@ class ShipperController extends Controller
      */
     public function show($id)
     {
-        $shipper = DB::table('shippers')->where('ShipperID', $id)->first();
+        $shipper = Shipper::find($id);
 
         return view('kurir.show', compact('shipper'));
     }
@@ -81,7 +77,7 @@ class ShipperController extends Controller
      */
     public function edit($id)
     {
-        $shipper = DB::table('shippers')->where('ShipperID', $id)->first();
+        $shipper = Shipper::where('ShipperID', $id)->first();
 
         return view('kurir.edit', compact('shipper'));
     }
@@ -95,14 +91,20 @@ class ShipperController extends Controller
      */
     public function update(Request $request, $id)
     {
-        DB::table('shippers')
-        ->where('ShipperID', $id)
-        ->update([
-              'CompanyName'  => $request->input('CompanyName'),
-              'Phone'        => $request->input('Phone')
+        try {
+            $validator = Validator::make($request->all(), [
+                'CompanyName'  => 'required|unique:shippers,companyname,'.$id.',supplierid|alpha|max:40',
+                'Phone'        => 'required|numeric'
             ]);
-
-        return redirect('shipper')->with('pesan_sukses', 'Data kurir berhasil diubah.');
+            if ($validator->fails()) {
+                return redirect('shipper/'.$id.'/edit')->withErrors($validator)->withInput();
+            }
+            Shipper::where('ShipperID', $id)->update($request->except('_method'));
+            return redirect('shipper')->with('pesan_sukses', 'Data kurir berhasil diubah.');
+        }
+        catch (\Exception $e) {
+            return redirect('shipper')->with('pesan_gagal', $e->getMessage());
+        }
     }
 
     /**
@@ -114,11 +116,10 @@ class ShipperController extends Controller
     public function destroy($id)
     {
         try {
-            DB::table('shippers')->where('ShipperID', '=', $id)->delete();
-
+            Shipper::Where('ShipperID', $id)->delete();
             return redirect('shipper')->with('pesan_sukses', 'Data kurir berhasil dihapus.');
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             return redirect('shipper')->with('pesan_gagal', $e->getMessage());
         }
     }

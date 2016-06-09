@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use DB;
+use Validator;
+
+use App\Employee;
 use App\Http\Requests;
 
 class EmployeeController extends Controller
@@ -16,9 +18,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = DB::table('employees')
-                    ->orderBy('EmployeeID', 'asc')
-                    ->paginate(5);
+        $employees = Employee::orderBy('EmployeeID', 'asc')->paginate(5);
         return view('karyawan.index', compact('employees'));
     }
 
@@ -41,7 +41,7 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         try {
-            $this->validate($request, [
+            $validator = Validator::make($request->all(), [
                 'LastName'          => 'required|alpha|max:20',
                 'FirstName'         => 'required|alpha|max:10',
                 'Title'             => 'required|alpha|max:30',
@@ -58,27 +58,11 @@ class EmployeeController extends Controller
                 'Notes'             => 'required',
                 'ReportsTo'         => 'required|numeric'
             ]);
-            $id = DB::table('employees')->insertGetId([
-                'LastName'          => $request->input('LastName'),
-                'FirstName'         => $request->input('FirstName'),
-                'Title'             => $request->input('Title'),
-                'TitleOfCourtesy'   => $request->input('TitleOfCourtesy'),
-                'BirthDate'         => $request->input('BirthDate'),
-                'HireDate'          => $request->input('HireDate'),
-                'Address'           => $request->input('Address'),
-                'City'              => $request->input('City'),
-                'Region'            => $request->input('Region'),
-                'PostalCode'        => $request->input('PostalCode'),
-                'Country'           => $request->input('Country'),
-                'HomePhone'         => $request->input('HomePhone'),
-                'Extension'         => $request->input('Extension'),
-                'Notes'             => $request->input('Notes'),
-                'ReportsTo'         => $request->input('ReportsTo')
-            ]);
-
-            if ($id > 0) {
-                return redirect('employee')->with('pesan_sukses', 'Data karyawan baru berhasil disimpan.');
+            if ($validator->fails()) {
+                return redirect('employee/create')->withErrors($validator)->withInput();
             }
+            Employee::create($request->all());
+            return redirect('employee')->with('pesan_sukses', 'Data karyawan baru berhasil disimpan.');
         }
         catch (Exception $e) {
             return redirect('employee')->with('pesan_gagal', $e->getMessage());
@@ -93,8 +77,7 @@ class EmployeeController extends Controller
      */
     public function show($id)
     {
-        $employee = DB::table('employees')->where('EmployeeID', $id)->first();
-
+        $employee = Employee::find($id);
         return view('karyawan.show', compact('employee'));
     }
 
@@ -106,8 +89,7 @@ class EmployeeController extends Controller
      */
     public function edit($id)
     {
-        $employee = DB::table('employees')->where('EmployeeID', $id)->first();
-
+        $employee = Employee::where('EmployeeID', $id)->first();
         return view('karyawan.edit', compact('employee'));
     }
 
@@ -120,27 +102,33 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        DB::table('employees')
-        ->where('EmployeeID', $id)
-        ->update([
-          'LastName'          => $request->input('LastName'),
-          'FirstName'         => $request->input('FirstName'),
-          'Title'             => $request->input('Title'),
-          'TitleOfCourtesy'   => $request->input('TitleOfCourtesy'),
-          'BirthDate'         => $request->input('BirthDate'),
-          'HireDate'          => $request->input('HireDate'),
-          'Address'           => $request->input('Address'),
-          'City'              => $request->input('City'),
-          'Region'            => $request->input('Region'),
-          'PostalCode'        => $request->input('PostalCode'),
-          'Country'           => $request->input('Country'),
-          'HomePhone'         => $request->input('HomePhone'),
-          'Extension'         => $request->input('Extension'),
-          'Notes'             => $request->input('Notes'),
-          'ReportsTo'         => $request->input('ReportsTo')
+        try {
+            $validator = Validator::make($request->all(), [
+                'LastName'          => 'required|alpha|max:20',
+                'FirstName'         => 'required|alpha|max:10',
+                'Title'             => 'required|alpha|max:30',
+                'TitleOfCourtesy'   => 'required|alpha|max:25',
+                'BirthDate'         => 'required',
+                'HireDate'          => 'required',
+                'Address'           => 'required|max:60',
+                'City'              => 'required|alpha|max:15',
+                'Region'            => 'required|alpha|max:15',
+                'PostalCode'        => 'required|numeric',
+                'Country'           => 'required|alpha|max:15',
+                'HomePhone'         => 'required|numeric',
+                'Extension'         => 'required|numeric',
+                'Notes'             => 'required',
+                'ReportsTo'         => 'required|numeric'
             ]);
-
-        return redirect('employee')->with('pesan_sukses', 'Data karyawan berhasil diubah.');
+            if ($validator->fails()) {
+                return redirect('employee/'.$id.'/edit')->withErrors($validator)->withInput();
+            }
+            Employee::where('EmployeeID', $id)->update($request->except('_method'));
+            return redirect('employee')->with('pesan_sukses', 'Data karyawan berhasil diubah.');
+        }
+        catch (\Exception $e) {
+            return redirect('employee')->with('pesan_gagal', $e->getMessage());
+        }
     }
 
     /**
@@ -152,11 +140,10 @@ class EmployeeController extends Controller
     public function destroy($id)
     {
         try {
-            DB::table('employees')->where('EmployeeID', '=', $id)->delete();
-
+            Employee::Where('EmployeeID', $id)->delete();
             return redirect('employee')->with('pesan_sukses', 'Data karyawan berhasil dihapus.');
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             return redirect('employee')->with('pesan_gagal', $e->getMessage());
         }
     }

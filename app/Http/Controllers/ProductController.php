@@ -4,7 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Validator;
 use DB;
+
+use App\Product;
+//use App\Category;
+//use App\Supplier;
 use App\Http\Requests;
 
 class ProductController extends Controller
@@ -16,10 +21,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = DB::table('products')
-                    ->leftJoin('categories', 'categories.CategoryID', '=', 'products.CategoryID')
-                    ->orderBy('ProductName', 'asc')
-                    ->paginate(10);
+        $products = Product::with('category')
+                            ->orderBy('ProductName', 'asc')->paginate(10);
         return view('produk.index', compact('products'));
     }
 
@@ -45,33 +48,22 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         try {
-            $this->validate($request, [
+            $validator = Validator::make($request->all(), [
                 'ProductName'       => 'required|unique:products|alpha|max:40',
-                'QuantityPerUnit'   => 'required|numeric',
+                'QuantityPerUnit'   => 'required',
                 'UnitPrice'         => 'required|numeric',
                 'UnitsInStock'      => 'required|numeric',
                 'UnitsOnOrder'      => 'required|numeric',
                 'ReorderLevel'      => 'required|numeric'
             ]);
-            
-            $id = DB::table('products')->insertGetId([
-                'ProductName'       => $request->input('ProductName'),
-                'SupplierID'        => $request->input('SupplierID'),
-                'CategoryID'        => $request->input('CategoryID'),
-                'QuantityPerUnit'   => $request->input('QuantityPerUnit'),
-                'UnitPrice'         => $request->input('UnitPrice'),
-                'UnitsInStock'      => $request->input('UnitsInStock'),
-                'UnitsOnOrder'      => $request->input('UnitsOnOrder'),
-                'ReorderLevel'      => $request->input('ReorderLevel'),
-                'Discontinued'      => $request->input('Discontinued') ? DB::raw(1) : DB::raw(0)
-            ]);
-
-            if ($id > 0) {
-                return redirect('product')->with('pesan_sukses', 'Data produk baru berhasil disimpan.');
+            if ($validator->fails()) {
+                return redirect('product/create')->withErrors($validator)->withInput();
             }
+            Product::create($request->all());
+            return redirect('product')->with('pesan_sukses', 'Data produk baru berhasil disimpan.');
         }
         catch (Exception $e) {
-            return redirect('product/create')->with('pesan_gagal', $e->getMessage());
+            return redirect('product')->with('pesan_gagal', $e->getMessage());
         }
     }
 
@@ -103,7 +95,7 @@ class ProductController extends Controller
         $categories = DB::table('categories')->get();
         $suppliers  = DB::table('suppliers')->get();
 
-        return view('produk.edit', compact('product', 'categories', 'suppliers'));
+        return view('produk.edit', compact('product'));
     }
 
     /**
@@ -115,21 +107,24 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        DB::table('products')
-        ->where('ProductID', $id)
-        ->update([
-                'ProductName'       => $request->input('ProductName'),
-                'SupplierID'        => $request->input('SupplierID'),
-                'CategoryID'        => $request->input('CategoryID'),
-                'QuantityPerUnit'   => $request->input('QuantityPerUnit'),
-                'UnitPrice'         => $request->input('UnitPrice'),
-                'UnitsInStock'      => $request->input('UnitsInStock'),
-                'UnitsOnOrder'      => $request->input('UnitsOnOrder'),
-                'ReorderLevel'      => $request->input('ReorderLevel'),
-                'Discontinued'      => $request->input('Discontinued') ? DB::raw(1) : DB::raw(0)
+        try {
+            $validator = Validator::make($request->all(), [
+                'ProductName'       => 'required|unique:products,productname,'.$id.',productid|alpha|max:40',
+                'QuantityPerUnit'   => 'required',
+                'UnitPrice'         => 'required|numeric',
+                'UnitsInStock'      => 'required|numeric',
+                'UnitsOnOrder'      => 'required|numeric',
+                'ReorderLevel'      => 'required|numeric'
             ]);
-
-        return redirect('product')->with('pesan_sukses', 'Data produk berhasil diubah.');
+            if ($validator->fails()) {
+                return redirect('product/'.$id.'/edit')->withErrors($validator)->withInput();
+            }
+            Product::where('ProductID', $id)->update($request->except('_method'));
+            return redirect('product')->with('pesan_sukses', 'Data produk berhasil diubah.');
+        }
+        catch (\Exception $e) {
+            return redirect('product')->with('pesan_gagal', $e->getMessage());
+        }
     }
 
     /**
@@ -141,11 +136,10 @@ class ProductController extends Controller
     public function destroy($id)
     {
         try {
-            DB::table('products')->where('ProductID', '=', $id)->delete();
-
+            Product::Where('ProductID', $id)->delete();
             return redirect('product')->with('pesan_sukses', 'Data produk berhasil dihapus.');
         }
-        catch(Exception $e) {
+        catch (\Exception $e) {
             return redirect('product')->with('pesan_gagal', $e->getMessage());
         }
     }

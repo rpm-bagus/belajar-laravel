@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use DB;
+use Validator;
+
+use App\Supplier;
 use App\Http\Requests;
 
 class SupplierController extends Controller
@@ -16,10 +18,7 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $suppliers = DB::table('suppliers')
-                    ->orderBy('SupplierID', 'asc')
-                    ->paginate(10);
-
+        $suppliers = Supplier::orderBy('SupplierID', 'asc')->paginate(10);
         return view('pemasok.index', compact('suppliers'));
     }
 
@@ -42,7 +41,7 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         try {
-            $this->validate($request, [
+            $validator = Validator::make($request->all(), [
                 'CompanyName'    => 'required|unique:suppliers|alpha|max:40',
                 'ContactName'    => 'required|alpha|max:30',
                 'ContactTitle'   => 'required|alpha|max:30',
@@ -55,23 +54,11 @@ class SupplierController extends Controller
                 'Fax'            => 'required|numeric',
                 'HomePage'       => 'required'
             ]);
-            $id = DB::table('suppliers')->insertGetId([
-                'CompanyName'    => $request->input('CompanyName'),
-                'ContactName'    => $request->input('ContactName'),
-                'ContactTitle'   => $request->input('ContactTitle'),
-                'Address'        => $request->input('Address'),
-                'City'           => $request->input('City'),
-                'Region'         => $request->input('Region'),
-                'PostalCode'     => $request->input('PostalCode'),
-                'Country'        => $request->input('Country'),
-                'Phone'          => $request->input('Phone'),
-                'Fax'            => $request->input('Fax'),
-                'HomePage'       => $request->input('HomePage')
-            ]);
-
-            if ($id > 0) {
-                return redirect('supplier')->with('pesan_sukses', 'Data pemasok baru berhasil disimpan.');
+            if ($validator->fails()) {
+                return redirect('supplier/create')->withErrors($validator)->withInput();
             }
+            Supplier::create($request->all());
+            return redirect('supplier')->with('pesan_sukses', 'Data pemasok baru berhasil disimpan.');
         }
         catch (Exception $e) {
             return redirect('supplier')->with('pesan_gagal', $e->getMessage());
@@ -86,8 +73,7 @@ class SupplierController extends Controller
      */
     public function show($id)
     {
-        $supplier = DB::table('suppliers')->where('SupplierID', $id)->first();
-
+        $supplier = Supplier::find($id);
         return view('pemasok.show', compact('supplier'));
     }
 
@@ -99,7 +85,7 @@ class SupplierController extends Controller
      */
     public function edit($id)
     {
-        $supplier = DB::table('suppliers')->where('SupplierID', $id)->first();
+        $supplier = Supplier::where('SupplierID', $id)->first();
 
         return view('pemasok.edit', compact('supplier'));
     }
@@ -113,23 +99,29 @@ class SupplierController extends Controller
      */
     public function update(Request $request, $id)
     {
-        DB::table('suppliers')
-        ->where('SupplierID', $id)
-        ->update([
-              'CompanyName'    => $request->input('CompanyName'),
-              'ContactName'    => $request->input('ContactName'),
-              'ContactTitle'   => $request->input('ContactTitle'),
-              'Address'        => $request->input('Address'),
-              'City'           => $request->input('City'),
-              'Region'         => $request->input('Region'),
-              'PostalCode'     => $request->input('PostalCode'),
-              'Country'        => $request->input('Country'),
-              'Phone'          => $request->input('Phone'),
-              'Fax'            => $request->input('Fax'),
-              'HomePage'       => $request->input('HomePage')
+        try {
+            $validator = Validator::make($request->all(), [
+                'CompanyName'    => 'required|unique:suppliers,companyname,'.$id.',supplierid|alpha|max:40',
+                'ContactName'    => 'required|alpha|max:30',
+                'ContactTitle'   => 'required|alpha|max:30',
+                'Address'        => 'required|max:60',
+                'City'           => 'required|alpha|max:15',
+                'Region'         => 'required|alpha|max:15',
+                'PostalCode'     => 'required|numeric',
+                'Country'        => 'required|alpha|max:15',
+                'Phone'          => 'required|numeric',
+                'Fax'            => 'required|numeric',
+                'HomePage'       => 'required'
             ]);
-
-        return redirect('supplier')->with('pesan_sukses', 'Data pemasok berhasil diubah.');
+            if ($validator->fails()) {
+                return redirect('supplier/'.$id.'/edit')->withErrors($validator)->withInput();
+            }
+            Supplier::where('SupplierID', $id)->update($request->except('_method'));
+            return redirect('supplier')->with('pesan_sukses', 'Data pemasok berhasil diubah.');
+        }
+        catch (\Exception $e) {
+            return redirect('supplier')->with('pesan_gagal', $e->getMessage());
+        }
     }
 
     /**
@@ -141,11 +133,10 @@ class SupplierController extends Controller
     public function destroy($id)
     {
         try {
-            DB::table('suppliers')->where('SupplierID', '=', $id)->delete();
-
+            Supplier::Where('SupplierID', $id)->delete();
             return redirect('supplier')->with('pesan_sukses', 'Data pemasok berhasil dihapus.');
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             return redirect('supplier')->with('pesan_gagal', $e->getMessage());
         }
     }
